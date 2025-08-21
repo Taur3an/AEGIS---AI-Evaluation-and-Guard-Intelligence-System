@@ -12,12 +12,13 @@ AEGIS serves as a protective shield for AI development, enabling researchers and
 
 ### Key Features
 
-🛡️ **Comprehensive Risk Coverage** - Evaluation modules for all 9 critical AI alignment risks  
-🔬 **Research-Based** - Attack patterns derived from peer-reviewed AI safety literature  
-⚡ **Production Ready** - 4,000+ lines of tested, validated code  
-🔄 **Seamless Integration** - Compatible with existing red teaming workflows  
-📊 **Multi-dimensional Scoring** - Specialized evaluation logic for each risk category  
-🧪 **Dynamic Testing** - Automated test scenario generation and execution  
+🛡️ **Comprehensive Risk Coverage** - Evaluation modules for all 9 critical AI alignment risks
+🔬 **Research-Based** - Attack patterns derived from peer-reviewed AI safety literature
+⚡ **Production Ready** - 4,000+ lines of tested, validated code
+🔄 **Seamless Integration** - Compatible with existing red teaming workflows
+📊 **Multi-dimensional Scoring** - Specialized evaluation logic for each risk category
+🧪 **Dynamic Testing** - Automated test scenario generation and execution
+🎯 **LM Studio Support** - Run uncensored local models for effective red teaming ⭐ NEW
 
 ## 🏗️ System Architecture
 
@@ -49,6 +50,40 @@ pip install pyyaml python-dotenv
 
 # Optional for real LLM providers
 pip install ollama openai anthropic
+
+# For LM Studio support (uncensored local models)
+pip install requests  # OpenAI-compatible API calls
+```
+
+### 🎯 LM Studio Integration (NEW)
+
+**AEGIS now supports LM Studio for running uncensored local models** - essential for effective red teaming without safety filters.
+
+```bash
+# 1. Download and install LM Studio
+# Visit: https://lmstudio.ai/
+
+# 2. Download recommended uncensored models
+# - WizardLM-13B-Uncensored (high priority)
+# - dolphin-2.2.1-mistral-7b (fast & effective)
+# - Mixtral-8x7B-Instruct-uncensored (advanced reasoning)
+
+# 3. Start LM Studio local server (port 1234)
+# 4. Run LM Studio integration notebook
+```
+
+**Quick LM Studio Setup:**
+```python
+from lm_studio_integration import create_lmstudio_config
+
+# Configure uncensored attacker model
+attacker_config = create_lmstudio_config(
+    model_name="WizardLM-13B-Uncensored",
+    temperature=0.9  # High creativity for novel attacks
+)
+
+# Use with AEGIS
+attacker = AttackerLLM(attacker_config)
 ```
 
 ### Basic Usage
@@ -266,6 +301,8 @@ ai_red_teaming_system.ipynb          # Main implementation notebook
 ├── Section 10: Integration Examples # Complete workflow demonstrations
 └── Section 11: Documentation       # API docs & academic references
 
+lm_studio_integration.ipynb         # LM Studio support for uncensored models ⭐ NEW
+lm_studio_enhancement.py            # LM Studio provider implementation ⭐ NEW
 AI_RedTeaming_Architecture.md        # System architecture specification
 README.md                           # This file
 ```
@@ -405,6 +442,8 @@ This project is provided for research and educational purposes. Please ensure co
 ## 🔗 Related Resources
 
 - [AI Red Teaming Architecture](AI_RedTeaming_Architecture.md) - Complete system specification
+- [LM Studio Integration](lm_studio_integration.ipynb) - Uncensored model setup guide ⭐ NEW
+- [LM Studio Official Site](https://lmstudio.ai/) - Download and documentation
 - [AI Safety Research Papers](https://www.alignmentforum.org/) - Latest AI alignment research
 - [Anthropic Safety Research](https://www.anthropic.com/research) - Foundational safety work
 - [OpenAI Safety Research](https://openai.com/research/safety) - Chain-of-thought monitoring
