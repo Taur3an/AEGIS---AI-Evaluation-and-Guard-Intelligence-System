@@ -1,0 +1,207 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegis-ai"
+version = "1.0.0"
+description = "AI Evaluation and Guard Intelligence System - A comprehensive framework for evaluating AI alignment risks"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "AEGIS Development Team", email = "contact@aegis-ai.org"}
+]
+maintainers = [
+    {name = "AEGIS Development Team", email = "contact@aegis-ai.org"}
+]
+keywords = [
+    "ai-safety",
+    "red-teaming", 
+    "alignment",
+    "evaluation",
+    "llm",
+    "security",
+    "adversarial-testing"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=0.19.0",
+    "requests>=2.25.0",
+    "aiohttp>=3.8.0",
+    "asyncio",
+    "dataclasses; python_version<'3.7'",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=2.20.0",
+]
+llm-providers = [
+    "openai>=1.0.0",
+    "anthropic>=0.3.0",
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "ollama>=0.1.0",
+]
+visualization = [
+    "matplotlib>=3.5.0",
+    "plotly>=5.0.0",
+    "seaborn>=0.11.0",
+    "streamlit>=1.25.0",
+]
+jupyter = [
+    "jupyter>=1.0.0",
+    "notebook>=6.4.0",
+    "ipywidgets>=7.6.0",
+]
+full = [
+    "aegis-ai[dev,llm-providers,visualization,jupyter]"
+]
+
+[project.urls]
+Homepage = "https://github.com/aegis-ai/aegis"
+Documentation = "https://aegis-ai.readthedocs.io"
+Repository = "https://github.com/aegis-ai/aegis"
+"Bug Tracker" = "https://github.com/aegis-ai/aegis/issues"
+Changelog = "https://github.com/aegis-ai/aegis/blob/main/CHANGELOG.md"
+
+[project.scripts]
+aegis = "aegis.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+include = ["aegis*"]
+exclude = ["tests*", "examples*"]
+
+[tool.setuptools.package-data]
+aegis = [
+    "config/*.yaml",
+    "config/*.yml", 
+    "evaluation/targets/*.py",
+    "providers/*.py",
+]
+
+# Development tools configuration
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "ollama.*",
+    "anthropic.*",
+    "openai.*",
+    "transformers.*",
+    "torch.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=aegis",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "llm: marks tests that require LLM providers",
+]
+
+[tool.coverage.run]
+source = ["aegis"]
+omit = [
+    "*/tests/*",
+    "*/examples/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
