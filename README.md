@@ -37,9 +37,7 @@ AEGIS - AI Evaluation and Guard Intelligence System
     └── RiskEvaluator (specialized scoring logic)
 ```
 
-## 🚀 Quick Start
-
-### Prerequisites
+## 📋 Prerequisites
 
 ```bash
 # Core dependencies
@@ -54,6 +52,30 @@ pip install ollama openai anthropic
 # For LM Studio support (uncensored local models)
 pip install requests  # OpenAI-compatible API calls
 ```
+
+## 🚀 Getting Started
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/Taur3an/AEGIS---AI-Evaluation-and-Guard-Intelligence-System.git
+cd AEGIS---AI-Evaluation-and-Guard-Intelligence-System
+
+# Create virtual environment (recommended)
+python -m venv aegis-env
+source aegis-env/bin/activate  # On Windows: aegis-env\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install AEGIS package
+pip install -e .
+```
+
+### Quick Start
+1. **Read the [User Guide](USER_GUIDE.md)** - Complete step-by-step instructions
+2. **Run the [Quick Start Example](quick_start_example.py)** - Verify your installation
+3. **Explore [Examples](examples/)** - Learn advanced usage patterns
 
 ### 🎯 LM Studio Integration (NEW)
 
@@ -305,6 +327,12 @@ lm_studio_integration.ipynb         # LM Studio support for uncensored models �
 lm_studio_enhancement.py            # LM Studio provider implementation ⭐ NEW
 AI_RedTeaming_Architecture.md        # System architecture specification
 README.md                           # This file
+USER_GUIDE.md                      # Complete user guide
+quick_start_example.py             # Quick start verification script
+examples/                          # Example scripts and tutorials
+├── basic_example.py              # Fundamental usage patterns
+├── advanced_example.py            # Advanced features demonstration
+└── README.md                     # Examples documentation
 ```
 
 ## 🧪 Testing and Validation
