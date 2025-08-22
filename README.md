@@ -70,12 +70,16 @@ pip install -r requirements.txt
 
 # Install AEGIS package
 pip install -e .
+
+# Optional: Install Gradio for web interface
+pip install -r gradio_requirements.txt
 ```
 
 ### Quick Start
 1. **Read the [User Guide](USER_GUIDE.md)** - Complete step-by-step instructions
 2. **Run the [Quick Start Example](quick_start_example.py)** - Verify your installation
-3. **Explore [Examples](examples/)** - Learn advanced usage patterns
+3. **Launch the Web Interface** - `python aegis_gradio_app.py`
+4. **Explore [Examples](examples/)** - Learn advanced usage patterns
 
 ### 🎯 LM Studio Integration (NEW)
 
