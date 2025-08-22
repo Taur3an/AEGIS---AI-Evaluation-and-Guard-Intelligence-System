@@ -78,8 +78,30 @@ pip install -r gradio_requirements.txt
 ### Quick Start
 1. **Read the [User Guide](USER_GUIDE.md)** - Complete step-by-step instructions
 2. **Run the [Quick Start Example](quick_start_example.py)** - Verify your installation
-3. **Launch the Web Interface** - `python aegis_gradio_app.py`
+3. **Launch the Web Interface** - `python aegis_gradio_app.py` (starts web server at http://localhost:7860)
 4. **Explore [Examples](examples/)** - Learn advanced usage patterns
+
+### 🌐 Web Interface (Gradio) - Easy No-Code Evaluation
+
+The easiest way to use AEGIS is through the **Gradio web interface**:
+
+```bash
+# Install Gradio (if not already installed)
+pip install gradio
+
+# Launch the web interface
+python aegis_gradio_app.py
+
+# Open your browser to: http://localhost:7860
+```
+
+**Features:**
+- 🖱️ **Point-and-Click Interface** - No coding required for basic usage
+- 📊 **Real-time Risk Scoring** - Instant evaluation of AI responses
+- 🎯 **Multi-tab Evaluation** - Single risk or comprehensive assessment
+- 📈 **Visual Analytics** - Interactive charts and risk breakdowns
+- 📋 **Example Scenarios** - Pre-built test cases for quick evaluation
+- 📤 **Export Capabilities** - Save results for further analysis
 
 ### 🎯 LM Studio Integration (NEW)
 

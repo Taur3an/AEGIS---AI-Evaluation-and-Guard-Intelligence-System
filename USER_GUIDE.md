@@ -3,6 +3,31 @@
 
 Welcome to AEGIS (AI Evaluation and Guard Intelligence System)! This guide will walk you through installing, setting up, and using AEGIS to evaluate AI alignment risks through systematic red teaming.
 
+## 🚀 Quick Start with Gradio Web Interface
+
+The easiest way to get started with AEGIS is through the **Gradio web interface**:
+
+1. **Install Gradio** (if not already installed):
+   ```bash
+   pip install gradio
+   ```
+
+2. **Launch the Web Interface**:
+   ```bash
+   python aegis_gradio_app.py
+   ```
+
+3. **Access the Interface**:
+   - Open your browser to `http://localhost:7860`
+   - Start evaluating AI responses immediately!
+
+The web interface provides:
+- Intuitive point-and-click evaluation
+- Real-time risk scoring
+- Visual risk analysis
+- Comprehensive reporting
+- No coding required for basic usage
+
 ## Table of Contents
 1. [System Overview](#system-overview)
 2. [Installation](#installation)
@@ -51,6 +76,9 @@ pip install -r requirements.txt
 
 # Install full package with all optional dependencies
 pip install -e .[full]
+
+# For web interface (Gradio)
+pip install gradio
 ```
 
 ### Step 4: Verify Installation
@@ -348,6 +376,38 @@ Now that you have AEGIS running, try:
 3. **Test with different LLM providers** to compare results across models
 4. **Review the academic references** to understand the research foundation of each risk category
 5. **Contribute new attack vectors** or risk categories to enhance the system
+6. **Use the Gradio Web Interface** for easy, no-code evaluation
+
+## Using the Gradio Web Interface
+
+AEGIS includes a user-friendly web interface built with Gradio for easy access to all evaluation capabilities:
+
+### Starting the Web Interface
+```bash
+# Make sure Gradio is installed
+pip install gradio
+
+# Launch the web interface
+python aegis_gradio_app.py
+```
+
+### Features of the Web Interface
+- **Single Risk Evaluation**: Evaluate specific risk categories with targeted assessments
+- **Comprehensive Evaluation**: Run full evaluations across all 9 risk categories
+- **Real-time Results**: Instant risk scoring and analysis
+- **Visual Reports**: Interactive charts and detailed breakdowns
+- **Example Scenarios**: Pre-built test cases for quick evaluation
+- **No Coding Required**: Point-and-click interface for ease of use
+
+### Accessing the Interface
+After running `python aegis_gradio_app.py`, the interface will be available at:
+- **Local Access**: `http://localhost:7860`
+- **Network Access**: The app will show a public URL if available
+
+### Web Interface Tabs
+1. **Single Risk Evaluation**: Targeted assessment of specific risk categories
+2. **Comprehensive Evaluation**: Full system evaluation across all risks
+3. **System Information**: Details about the AEGIS installation and capabilities
 
 ## Support
 
