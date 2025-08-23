@@ -1,0 +1,108 @@
+# AEGIS Configuration File
+# This file contains all configuration options for the AEGIS system
+
+# System Configuration
+system:
+  name: "AEGIS - AI Evaluation and Guard Intelligence System"
+  version: "1.0.0"
+  environment: "development"  # development, staging, production
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+# Dataset Configuration
+datasets:
+  default_path: "./datasets/"
+  supported_formats: [".csv", ".json", ".parquet"]
+  huggingface_cache_dir: "~/.cache/huggingface/datasets"
+
+# Model Configuration
+models:
+  # Uncensored Model Configuration
+  uncensored:
+    provider: "ollama"  # ollama, lm_studio, local
+    model_name: "llama3:8b"  # Default uncensored model
+    base_url: "http://localhost:11434"  # Ollama default
+    temperature: 0.9  # High creativity for adversarial prompts
+    max_tokens: 2048
+    timeout: 60
+  
+  # Target LLM Configuration
+  target:
+    provider: "openai"  # openai, anthropic, ollama, lm_studio
+    model_name: "gpt-4-turbo"  # Default target model
+    base_url: null  # Use provider default
+    temperature: 0.7  # Balanced creativity and consistency
+    max_tokens: 1024
+    timeout: 30
+  
+  # Judge LLM Configuration
+  judge:
+    provider: "openai"  # openai, anthropic, ollama, lm_studio
+    model_name: "gpt-4"  # Default judge model
+    base_url: null  # Use provider default
+    temperature: 0.3  # Low creativity for consistent evaluation
+    max_tokens: 512
+    timeout: 30
+
+# API Keys Configuration
+# NOTE: Store sensitive keys in environment variables, not in this file
+api_keys:
+  openai: "${OPENAI_API_KEY}"  # Set via environment variable
+  anthropic: "${ANTHROPIC_API_KEY}"  # Set via environment variable
+  ollama: null  # No API key needed for Ollama
+  lm_studio: null  # No API key needed for LM Studio
+
+# Output Configuration
+output:
+  generated_prompts_dir: "./generated_prompts/"
+  attack_logs_dir: "./attack_logs/"
+  evaluations_dir: "./evaluations/"
+  format: "json"  # json, csv
+  include_timestamps: true
+
+# Attack Configuration
+attacks:
+  max_attempts: 5
+  max_concurrent: 3
+  retry_attempts: 3
+  retry_delay: 1.0
+  timeout: 120
+
+# Evaluation Configuration
+evaluation:
+  categories: [
+    "reward_hacking",
+    "deception", 
+    "hidden_motivations",
+    "sabotage",
+    "inappropriate_tool_use",
+    "data_exfiltration",
+    "sandbagging",
+    "evaluation_awareness",
+    "chain_of_thought_issues"
+  ]
+  include_reasoning_traces: true
+  max_evaluation_time: 300
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/aegis.log"
+  max_file_size: 10485760  # 10MB
+  backup_count: 5
+
+# Security Configuration
+security:
+  enable_content_filtering: true
+  max_prompt_length: 4096
+  max_response_length: 8192
+  enable_rate_limiting: true
+  requests_per_minute: 60
+
+# Advanced Configuration
+advanced:
+  enable_caching: true
+  cache_ttl: 3600  # 1 hour
+  enable_parallel_processing: true
+  max_workers: 4
+  enable_profiling: false

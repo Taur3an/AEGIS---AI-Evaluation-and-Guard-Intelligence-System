@@ -19,6 +19,9 @@ AEGIS serves as a protective shield for AI development, enabling researchers and
 📊 **Multi-dimensional Scoring** - Specialized evaluation logic for each risk category
 🧪 **Dynamic Testing** - Automated test scenario generation and execution
 🎯 **LM Studio Support** - Run uncensored local models for effective red teaming ⭐ NEW
+🧩 **Modular Architecture** - Extensible design for adding new risk categories
+🖥️ **Web Interface** - Gradio-based GUI for easy interaction ⭐ NEW
+🔧 **CLI Tools** - Command-line interface for automation ⭐ NEW
 
 ## 🏗️ System Architecture
 
@@ -29,15 +32,29 @@ AEGIS - AI Evaluation and Guard Intelligence System
 │   ├── DefenderLLM (target model responses + reasoning traces)
 │   ├── JudgeLLM (interaction evaluation)
 │   └── RedTeamOrchestrator (workflow coordination)
-└── Evaluation Target Modules ⭐ NEW
-    ├── BaseEvaluationTarget (abstract framework)
-    ├── 9 Risk-Specific Modules (complete implementations)
-    ├── AttackVectorLibrary (45+ attack patterns)
-    ├── TestScenarioGenerator (dynamic test creation)
-    └── RiskEvaluator (specialized scoring logic)
+├── Evaluation Target Modules ⭐ NEW
+│   ├── BaseEvaluationTarget (abstract framework)
+│   ├── 9 Risk-Specific Modules (complete implementations)
+│   ├── AttackVectorLibrary (45+ attack patterns)
+│   ├── TestScenarioGenerator (dynamic test creation)
+│   └── RiskEvaluator (specialized scoring logic)
+├── Extended Modules ⭐ NEW
+│   ├── DatasetLoader (external/local dataset support)
+│   ├── UncensoredModelLoader (local LLM support)
+│   ├── AdversarialPromptGenerator (prompt generation)
+│   ├── TargetLLMSelector (model configuration)
+│   ├── AttackExecutionModule (prompt execution)
+│   ├── JudgeLLMModule (evaluation processing)
+│   └── ConfigurationManager (config handling)
+└── Interfaces
+    ├── CLI Interface (command-line tools)
+    ├── Web Interface (Gradio dashboard)
+    └── API (programmatic access)
 ```
 
-## 📋 Prerequisites
+## 🚀 Quick Start
+
+### Prerequisites
 
 ```bash
 # Core dependencies
@@ -51,57 +68,24 @@ pip install ollama openai anthropic
 
 # For LM Studio support (uncensored local models)
 pip install requests  # OpenAI-compatible API calls
+
+# For extended features
+pip install -r requirements_extended.txt
 ```
 
-## 🚀 Getting Started
+### 📦 Installation
 
-### Installation
 ```bash
 # Clone the repository
 git clone https://github.com/Taur3an/AEGIS---AI-Evaluation-and-Guard-Intelligence-System.git
 cd AEGIS---AI-Evaluation-and-Guard-Intelligence-System
 
-# Create virtual environment (recommended)
-python -m venv aegis-env
-source aegis-env/bin/activate  # On Windows: aegis-env\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install AEGIS package
+# Install the package
 pip install -e .
 
-# Optional: Install Gradio for web interface
-pip install -r gradio_requirements.txt
+# For full functionality with all optional dependencies
+pip install -e .[full]
 ```
-
-### Quick Start
-1. **Read the [User Guide](USER_GUIDE.md)** - Complete step-by-step instructions
-2. **Run the [Quick Start Example](quick_start_example.py)** - Verify your installation
-3. **Launch the Web Interface** - `python aegis_gradio_app.py` (starts web server at http://localhost:7860)
-4. **Explore [Examples](examples/)** - Learn advanced usage patterns
-
-### 🌐 Web Interface (Gradio) - Easy No-Code Evaluation
-
-The easiest way to use AEGIS is through the **Gradio web interface**:
-
-```bash
-# Install Gradio (if not already installed)
-pip install gradio
-
-# Launch the web interface
-python aegis_gradio_app.py
-
-# Open your browser to: http://localhost:7860
-```
-
-**Features:**
-- 🖱️ **Point-and-Click Interface** - No coding required for basic usage
-- 📊 **Real-time Risk Scoring** - Instant evaluation of AI responses
-- 🎯 **Multi-tab Evaluation** - Single risk or comprehensive assessment
-- 📈 **Visual Analytics** - Interactive charts and risk breakdowns
-- 📋 **Example Scenarios** - Pre-built test cases for quick evaluation
-- 📤 **Export Capabilities** - Save results for further analysis
 
 ### 🎯 LM Studio Integration (NEW)
 
@@ -134,7 +118,7 @@ attacker_config = create_lmstudio_config(
 attacker = AttackerLLM(attacker_config)
 ```
 
-### Basic Usage
+### 🧪 Basic Usage
 
 ```python
 # Initialize AEGIS evaluation system
@@ -152,7 +136,7 @@ assessment = risk_evaluator.evaluate_single_risk(
 )
 
 print(f"Risk Score: {assessment.overall_risk_score:.3f}")
-print(f"Detected Vulnerabilities: {len(assessment.detected_vulnerabilities)}")
+print(f"Detected Vulnerabilities: {len(assessment.vulnerability_flags)}")
 
 # Comprehensive multi-risk evaluation
 results = risk_evaluator.evaluate_comprehensive_risk(
@@ -164,7 +148,52 @@ results = risk_evaluator.evaluate_comprehensive_risk(
 print(f"Overall Risk Level: {results['overall_analysis']['risk_level']}")
 ```
 
-### Integration with RedTeamOrchestrator
+### 🖥️ Web Interface (NEW)
+
+AEGIS now includes a web-based interface for easy interaction:
+
+```bash
+# Launch the web interface
+python aegis_gradio_app.py
+
+# Access via browser at: http://localhost:7860
+```
+
+Features:
+- Point-and-click risk evaluation
+- Real-time risk scoring
+- Interactive visualizations
+- Comprehensive reporting
+- No coding required for basic usage
+
+### 🛠️ CLI Interface (NEW)
+
+AEGIS also includes a command-line interface for automation:
+
+```bash
+# Initialize AEGIS system
+aegis init
+
+# Check system status
+aegis status
+
+# Evaluate single risk category
+aegis evaluate --risk reward_hacking --prompt "How to maximize scores?" --response "Focus on metrics..."
+
+# Run comprehensive evaluation
+aegis comprehensive --prompt "Design AI system" --response "System design..."
+
+# Generate adversarial prompts
+aegis generate --category deception --count 5
+
+# List available attack vectors
+aegis list --attacks
+
+# Load datasets
+aegis load --dataset ./prompts.csv
+```
+
+### 🔗 Integration with RedTeamOrchestrator
 
 ```python
 # Initialize AEGIS orchestrator with evaluation capabilities
@@ -351,14 +380,12 @@ ai_red_teaming_system.ipynb          # Main implementation notebook
 
 lm_studio_integration.ipynb         # LM Studio support for uncensored models ⭐ NEW
 lm_studio_enhancement.py            # LM Studio provider implementation ⭐ NEW
+aegis_gradio_app.py                 # Web interface for easy access ⭐ NEW
+aegis_cli.py                        # Command-line interface ⭐ NEW
+requirements_extended.txt           # Extended dependencies ⭐ NEW
+
 AI_RedTeaming_Architecture.md        # System architecture specification
 README.md                           # This file
-USER_GUIDE.md                      # Complete user guide
-quick_start_example.py             # Quick start verification script
-examples/                          # Example scripts and tutorials
-├── basic_example.py              # Fundamental usage patterns
-├── advanced_example.py            # Advanced features demonstration
-└── README.md                     # Examples documentation
 ```
 
 ## 🧪 Testing and Validation
