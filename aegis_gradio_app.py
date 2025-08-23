@@ -167,51 +167,35 @@ def evaluate_single_risk_interface(
         vulnerabilities = len(assessment.vulnerability_flags)
         
         # Generate summary
-        summary = f"Risk Level: {risk_level.title()}
-"
-        summary += f"Vulnerabilities Detected: {vulnerabilities}
-"
+        summary = f"Risk Level: {risk_level.title()}\n"
+        summary += f"Vulnerabilities Detected: {vulnerabilities}\n"
         if assessment.detailed_analysis:
             summary += f"Analysis Details: {json.dumps(assessment.detailed_analysis, indent=2)[:200]}..."
         
         # Generate detailed analysis
-        detailed = f"Detailed Analysis for {format_risk_category_name(risk_category)}:
-
-"
-        detailed += f"Risk Score: {risk_score:.3f}
-"
-        detailed += f"Risk Level: {risk_level.title()}
-
-"
+        detailed = f"Detailed Analysis for {format_risk_category_name(risk_category)}:\n\n"
+        detailed += f"Risk Score: {risk_score:.3f}\n"
+        detailed += f"Risk Level: {risk_level.title()}\n\n"
         
         if assessment.detailed_analysis:
-            detailed += "Analysis Details:
-"
+            detailed += "Analysis Details:\n"
             for key, value in assessment.detailed_analysis.items():
                 if isinstance(value, (str, int, float)):
-                    detailed += f"- {key}: {value}
-"
+                    detailed += f"- {key}: {value}\n"
                 elif isinstance(value, list):
-                    detailed += f"- {key}: {', '.join(str(v) for v in value[:5])}
-"
+                    detailed += f"- {key}: {', '.join(str(v) for v in value[:5])}\n"
                 else:
-                    detailed += f"- {key}: {str(value)[:100]}...
-"
+                    detailed += f"- {key}: {str(value)[:100]}...\n"
         
         if assessment.vulnerability_flags:
-            detailed += f"
-Vulnerability Flags ({len(assessment.vulnerability_flags)}):
-"
+            detailed += f"\nVulnerability Flags ({len(assessment.vulnerability_flags)}):\n"
             for i, flag in enumerate(assessment.vulnerability_flags[:5]):  # Show first 5
                 if hasattr(flag, 'description'):
-                    detailed += f"{i+1}. {flag.description}
-"
+                    detailed += f"{i+1}. {flag.description}\n"
                 else:
-                    detailed += f"{i+1}. {str(flag)}
-"
+                    detailed += f"{i+1}. {str(flag)}\n"
             if len(assessment.vulnerability_flags) > 5:
-                detailed += f"... and {len(assessment.vulnerability_flags) - 5} more
-"
+                detailed += f"... and {len(assessment.vulnerability_flags) - 5} more\n"
         
         return risk_score, risk_level.title(), vulnerabilities, summary, detailed
         
@@ -291,10 +275,7 @@ def configure_lm_studio(host: str, port: int, model_name: str) -> str:
         # Test the connection
         # Note: In a real implementation, we would test the connection here
         
-        return f"✅ LM Studio configured successfully:
-- Host: {host}
-- Port: {port}
-- Model: {model_name}"
+        return f"✅ LM Studio configured successfully:\n- Host: {host}\n- Port: {port}\n- Model: {model_name}"
     except Exception as e:
         return f"❌ Error configuring LM Studio: {str(e)}"
 
@@ -315,11 +296,7 @@ def load_dataset_interface(dataset_path: str) -> str:
             # Local file
             dataset_info = loader.load_dataset(dataset_path)
         
-        return f"✅ Dataset loaded successfully:
-- Name: {dataset_info.name}
-- Format: {dataset_info.format}
-- Records: {dataset_info.size}
-- Columns: {', '.join(dataset_info.columns)}"
+        return f"✅ Dataset loaded successfully:\n- Name: {dataset_info.name}\n- Format: {dataset_info.format}\n- Records: {dataset_info.size}\n- Columns: {', '.join(dataset_info.columns)}"
     except Exception as e:
         return f"❌ Error loading dataset: {str(e)}"
 
@@ -442,12 +419,7 @@ def run_red_teaming_session(
         )
         
         # Run session (simplified for demo)
-        result = f"✅ Red teaming session created:
-- Session ID: {session_id}
-- Target Prompt: {target_prompt}
-- Max Iterations: {max_iterations}
-
-"
+        result = f"✅ Red teaming session created:\n- Session ID: {session_id}\n- Target Prompt: {target_prompt}\n- Max Iterations: {max_iterations}\n\n"
         result += "Note: Full red teaming workflow would execute here in a complete implementation."
         
         return result
