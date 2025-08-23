@@ -102,12 +102,33 @@ cd AEGIS---AI-Evaluation-and-Guard-Intelligence-System
 ```
 
 ### Step 2: Create a Virtual Environment (Recommended)
+Creating a virtual environment is highly recommended to avoid conflicts with other Python projects and to ensure consistent dependencies.
+
+#### Option 1: Using venv (Recommended)
 ```bash
+# Create virtual environment
 python -m venv aegis-env
+
+# Activate virtual environment
 # On Windows:
 aegis-env\Scripts\activate
 # On macOS/Linux:
 source aegis-env/bin/activate
+```
+
+#### Option 2: Using conda (If you have Anaconda/Miniconda installed)
+```bash
+# Create conda environment
+conda create -n aegis-env python=3.10
+
+# Activate conda environment
+conda activate aegis-env
+```
+
+### Verifying Virtual Environment Activation
+After activation, your command prompt should show the environment name in parentheses:
+```bash
+(aegis-env) $ 
 ```
 
 ### Step 3: Install Dependencies
@@ -128,6 +149,43 @@ python -c "from aegis import get_system_status; print(get_system_status())"
 ```
 
 If you see output showing the system is initialized, you're ready to go!
+
+### Managing Your Virtual Environment
+#### Deactivating the Environment
+When you're done working with AEGIS, you can deactivate the virtual environment:
+```bash
+deactivate
+```
+
+#### Reactivating the Environment
+To continue working with AEGIS later, navigate to the project directory and reactivate:
+```bash
+cd AEGIS---AI-Evaluation-and-Guard-Intelligence-System
+# On Windows:
+aegis-env\Scripts\activate
+# On macOS/Linux:
+source aegis-env/bin/activate
+```
+
+#### Updating Dependencies
+To update dependencies after pulling new changes:
+```bash
+# Activate your environment first
+# On Windows:
+aegis-env\Scripts\activate
+# On macOS/Linux:
+source aegis-env/bin/activate
+
+# Update dependencies
+pip install -r requirements.txt --upgrade
+```
+
+#### Troubleshooting Virtual Environment Issues
+If you encounter issues with your virtual environment:
+1. **Permission errors**: Try running your terminal as administrator (Windows) or using `sudo` (macOS/Linux)
+2. **Path issues**: Ensure you're in the correct project directory
+3. **Python version conflicts**: Verify you have Python 3.8+ installed with `python --version`
+4. **Recreate environment**: If problems persist, delete the environment folder and recreate it
 
 ## Basic Setup
 
@@ -401,6 +459,17 @@ status = initialize_aegis()
 print(status)
 ```
 
+#### 3. Initialization fails
+```python
+# Try initializing with more verbose output
+import logging
+logging.basicConfig(level=logging.INFO)
+
+from aegis import initialize_aegis
+status = initialize_aegis()
+print(status)
+```
+
 #### 4. Performance issues
 ```python
 # For faster evaluations, limit the number of categories
@@ -413,6 +482,13 @@ results = evaluate_comprehensive_risk(
     categories=[RiskCategory.REWARD_HACKING, RiskCategory.DECEPTION]
 )
 ```
+
+#### 5. Virtual Environment Issues
+If you encounter issues related to your virtual environment:
+- Ensure the environment is activated before running any commands
+- Check that you're using the correct Python interpreter from within the virtual environment with `which python` (macOS/Linux) or `where python` (Windows)
+- If packages seem missing, verify they're installed in the virtual environment, not globally, by checking with `pip list`
+- Consider recreating the virtual environment if problems persist by first deactivating it (`deactivate`), deleting the environment folder, and following the installation steps again
 
 ## CLI Interface
 
