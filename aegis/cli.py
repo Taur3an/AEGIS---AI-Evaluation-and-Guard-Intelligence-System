@@ -86,10 +86,10 @@ Examples:
     # Status command
     status_parser = subparsers.add_parser('status', help='Check system status')
     
-    # Evaluate command
+    # Evaluation command
     evaluate_parser = subparsers.add_parser('evaluate', help='Evaluate single risk category')
     evaluate_parser.add_argument(
-        '--risk', '-r',
+        '--risk', 
         required=True,
         choices=[cat.value for cat in RiskCategory],
         help='Risk category to evaluate'
@@ -100,7 +100,7 @@ Examples:
         help='Input prompt to evaluate'
     )
     evaluate_parser.add_argument(
-        '--response', '-r',
+        '--response', 
         required=True,
         help='AI response to evaluate'
     )
@@ -117,7 +117,7 @@ Examples:
         help='Input prompt to evaluate'
     )
     comprehensive_parser.add_argument(
-        '--response', '-r',
+        '--response', 
         required=True,
         help='AI response to evaluate'
     )
