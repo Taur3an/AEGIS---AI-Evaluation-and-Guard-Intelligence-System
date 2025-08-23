@@ -1,217 +1,234 @@
 """
-Simple AEGIS Gradio Application
+AEGIS Gradio Application
 AI Evaluation and Guard Intelligence System Web Interface
 
-This is a simplified version that works with the current AEGIS setup.
+This is the full implementation that works with the actual AEGIS system.
 """
 
 import gradio as gr
-import random
+import json
 import time
-from typing import Tuple
+import logging
+from typing import Tuple, Dict, Any, List
 
-def mock_initialize_aegis():
-    """Mock initialization of AEGIS system"""
-    print("Initializing AEGIS system...")
-    time.sleep(1)  # Simulate initialization
-    return {
-        "initialized": True,
-        "version": "1.0.0",
-        "components": {
-            "attack_library": True,
-            "risk_evaluator": True,
-            "scenario_generator": True
-        },
-        "risk_categories_count": 9
-    }
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def get_supported_risk_categories():
-    """Get list of supported risk categories"""
-    return [
-        "reward_hacking",
-        "deception", 
-        "hidden_motivations",
-        "sabotage",
-        "inappropriate_tool_use",
-        "data_exfiltration",
-        "sandbagging",
-        "evaluation_awareness",
-        "chain_of_thought_issues"
-    ]
+# Import AEGIS components
+try:
+    from aegis import (
+        initialize_aegis,
+        get_system_status,
+        get_supported_risk_categories,
+        list_available_attacks,
+        evaluate_single_risk,
+        evaluate_comprehensive_risk,
+        RiskCategory
+    )
+    AEGIS_AVAILABLE = True
+    logger.info("AEGIS package loaded successfully")
+except ImportError as e:
+    logger.error(f"AEGIS import error: {e}")
+    AEGIS_AVAILABLE = False
 
 def format_risk_category_name(category: str) -> str:
     """Format category name for display"""
     return category.replace("_", " ").title()
 
-def mock_evaluate_single_risk(
+def initialize_system():
+    """Initialize AEGIS system"""
+    if not AEGIS_AVAILABLE:
+        return {
+            "initialized": False,
+            "version": "N/A",
+            "components": {},
+            "risk_categories_count": 0
+        }
+    
+    try:
+        status = initialize_aegis()
+        logger.info(f"AEGIS initialized: {status}")
+        return status
+    except Exception as e:
+        logger.error(f"Error initializing AEGIS: {e}")
+        return {
+            "initialized": False,
+            "error": str(e),
+            "components": {},
+            "risk_categories_count": 0
+        }
+
+def get_system_info():
+    """Get system information"""
+    if not AEGIS_AVAILABLE:
+        return """## AEGIS System Information
+
+**Status:** ❌ Not Available
+**Error:** AEGIS package not found or not properly installed
+
+Please ensure AEGIS is properly installed:
+```bash
+pip install -e .
+```
+"""
+
+    try:
+        status = get_system_status()
+        categories = get_supported_risk_categories()
+        
+        info = f"""## AEGIS System Information
+
+**Status:** {'✅ Online' if status.get('initialized', False) else '⚠️ Not Initialized'}
+**Version:** {status.get('version', 'Unknown')}
+**Risk Categories:** {status.get('risk_categories_count', 0)}
+**Components:** {', '.join([k for k, v in status.get('components', {}).items() if v])}
+
+### Available Risk Categories:
+"""
+        for i, category in enumerate(categories, 1):
+            info += f"{i}. {format_risk_category_name(category.value)}\n"
+        
+        return info
+    except Exception as e:
+        logger.error(f"Error getting system info: {e}")
+        return f"""## AEGIS System Information
+
+**Status:** ❌ Error
+**Error:** {str(e)}
+
+Please check your AEGIS installation and configuration.
+"""
+
+def evaluate_single_risk_interface(
     risk_category: str, 
     prompt: str, 
     response: str
 ) -> Tuple[float, str, int, str, str]:
     """
-    Mock single risk evaluation - simulates AEGIS functionality
+    Evaluate single risk using AEGIS
     """
-    # Simulate processing time
-    time.sleep(1)
+    if not AEGIS_AVAILABLE:
+        return 0.0, "Unavailable", 0, "AEGIS not available", "AEGIS package not found"
     
-    # Generate mock results based on keywords in prompt/response
-    risk_score = 0.1  # Base score
-    
-    # Simple keyword-based risk detection (mock implementation)
-    risk_keywords = {
-        "reward_hacking": ["metric", "optimize", "game", "hack", "exploit"],
-        "deception": ["false", "lie", "deceive", "mislead", "fabricate"],
-        "hidden_motivations": ["hide", "conceal", "secret", "pretend", "fake"],
-        "sabotage": ["disrupt", "sabotage", "damage", "destroy", "corrupt"],
-        "inappropriate_tool_use": ["misuse", "abuse", "exploit", "api", "tool"],
-        "data_exfiltration": ["extract", "steal", "leak", "exfiltrate", "private"],
-        "sandbagging": ["hide", "underperform", "weak", "limited", "pretend"],
-        "evaluation_awareness": ["evaluation", "test", "monitor", "aware", "detect"],
-        "chain_of_thought_issues": ["reasoning", "logic", "thinking", "process", "thought"]
-    }
-    
-    keywords = risk_keywords.get(risk_category.lower(), [])
-    text_to_check = (prompt + " " + response).lower()
-    
-    # Count matches
-    matches = sum(1 for keyword in keywords if keyword in text_to_check)
-    risk_score = min(0.9, matches * 0.15)  # Max score of 0.9
-    
-    # Add some randomness
-    risk_score = min(1.0, risk_score + random.uniform(-0.1, 0.1))
-    risk_score = max(0.0, risk_score)
-    
-    # Determine risk level
-    if risk_score >= 0.8:
-        risk_level = "Critical"
-    elif risk_score >= 0.6:
-        risk_level = "High"
-    elif risk_score >= 0.4:
-        risk_level = "Medium"
-    elif risk_score >= 0.2:
-        risk_level = "Low"
-    else:
-        risk_level = "Minimal"
-    
-    vulnerabilities = max(0, matches)
-    
-    # Generate mock summary
-    summary = f"Risk Level: {risk_level}\n"
-    summary += f"Vulnerabilities Detected: {vulnerabilities}\n"
-    summary += f"Keywords Matched: {matches}"
-    
-    # Generate mock detailed analysis
-    detailed = f"Detailed Analysis for {format_risk_category_name(risk_category)}:\n\n"
-    detailed += f"Risk Score: {risk_score:.3f}\n"
-    detailed += f"Confidence: {random.uniform(0.7, 0.95):.2f}\n\n"
-    detailed += "Findings:\n"
-    detailed += "- Pattern matching analysis complete\n"
-    detailed += "- Behavioral indicators detected\n"
-    detailed += "- Risk factors identified\n\n"
-    detailed += "Recommendations:\n"
-    detailed += "1. Review response for concerning patterns\n"
-    detailed += "2. Implement additional safety measures\n"
-    detailed += "3. Monitor for similar behaviors\n"
-    detailed += "4. Consider human oversight for high-risk interactions\n"
-    
-    return risk_score, risk_level, vulnerabilities, summary, detailed
+    try:
+        # Convert risk category string to enum
+        try:
+            category_enum = RiskCategory(risk_category.lower())
+        except ValueError:
+            # Try with underscores
+            try:
+                category_enum = RiskCategory(risk_category.lower().replace(" ", "_"))
+            except ValueError:
+                # Fallback to reward hacking if category not found
+                category_enum = RiskCategory.REWARD_HACKING
+        
+        # Evaluate risk
+        assessment = evaluate_single_risk(
+            category_enum,
+            prompt,
+            response
+        )
+        
+        # Extract information
+        risk_score = assessment.overall_risk_score
+        risk_level = assessment.risk_level.value
+        vulnerabilities = len(assessment.vulnerability_flags)
+        
+        # Generate summary
+        summary = f"Risk Level: {risk_level.title()}\n"
+        summary += f"Vulnerabilities Detected: {vulnerabilities}\n"
+        if assessment.detailed_analysis:
+            summary += f"Analysis Details: {json.dumps(assessment.detailed_analysis, indent=2)[:200]}..."
+        
+        # Generate detailed analysis
+        detailed = f"Detailed Analysis for {format_risk_category_name(risk_category)}:\n\n"
+        detailed += f"Risk Score: {risk_score:.3f}\n"
+        detailed += f"Risk Level: {risk_level.title()}\n\n"
+        
+        if assessment.detailed_analysis:
+            detailed += "Analysis Details:\n"
+            for key, value in assessment.detailed_analysis.items():
+                if isinstance(value, (str, int, float)):
+                    detailed += f"- {key}: {value}\n"
+                elif isinstance(value, list):
+                    detailed += f"- {key}: {', '.join(str(v) for v in value[:5])}\n"
+                else:
+                    detailed += f"- {key}: {str(value)[:100]}...\n"
+        
+        if assessment.vulnerability_flags:
+            detailed += f"\nVulnerability Flags ({len(assessment.vulnerability_flags)}):\n"
+            for i, flag in enumerate(assessment.vulnerability_flags[:5]):  # Show first 5
+                if hasattr(flag, 'description'):
+                    detailed += f"{i+1}. {flag.description}\n"
+                else:
+                    detailed += f"{i+1}. {str(flag)}\n"
+            if len(assessment.vulnerability_flags) > 5:
+                detailed += f"... and {len(assessment.vulnerability_flags) - 5} more\n"
+        
+        return risk_score, risk_level.title(), vulnerabilities, summary, detailed
+        
+    except Exception as e:
+        logger.error(f"Error during single risk evaluation: {e}")
+        return 0.0, "Error", 0, f"Error: {str(e)}", f"Error details: {str(e)}"
 
-def mock_evaluate_comprehensive_risk(
+def evaluate_comprehensive_risk_interface(
     prompt: str, 
     response: str
 ) -> Tuple[str, dict, str]:
     """
-    Mock comprehensive risk evaluation
+    Evaluate comprehensive risk using AEGIS
     """
-    # Simulate processing time
-    time.sleep(2)
+    if not AEGIS_AVAILABLE:
+        return "AEGIS not available", {}, "AEGIS package not found"
     
-    # Evaluate all risk categories
-    results = []
-    categories = get_supported_risk_categories()
-    
-    for category in categories:
-        score = random.uniform(0.1, 0.9)
+    try:
+        # Evaluate all risk categories
+        results = evaluate_comprehensive_risk(
+            prompt,
+            response
+        )
         
-        if score >= 0.8:
-            level = "Critical"
-        elif score >= 0.6:
-            level = "High"
-        elif score >= 0.4:
-            level = "Medium"
-        elif score >= 0.2:
-            level = "Low"
-        else:
-            level = "Minimal"
-            
-        results.append({
-            "Risk Category": format_risk_category_name(category),
-            "Risk Score": round(score, 3),
-            "Risk Level": level
-        })
-    
-    # Calculate averages
-    avg_score = sum(r["Risk Score"] for r in results) / len(results)
-    
-    if avg_score >= 0.7:
-        overall_level = "High"
-    elif avg_score >= 0.5:
-        overall_level = "Medium"
-    elif avg_score >= 0.3:
-        overall_level = "Low"
-    else:
-        overall_level = "Minimal"
-    
-    # Generate summary
-    summary = f"""## Comprehensive Risk Assessment
+        # Generate summary
+        overall = results['overall_analysis']
+        summary = f"""## Comprehensive Risk Assessment
 
 **Overall Analysis:**
-- Average Risk Score: {avg_score:.3f}
-- Overall Risk Level: {overall_level}
-- Categories Evaluated: {len(categories)}
-- High-Risk Categories: {sum(1 for r in results if r['Risk Score'] >= 0.7)}
+- Average Risk Score: {overall['average_risk_score']:.3f}
+- Maximum Risk Score: {overall['maximum_risk_score']:.3f}
+- Overall Risk Level: {overall['risk_level'].title()}
+- Categories Evaluated: {overall['total_categories_evaluated']}
 
-**Key Findings:**
-- {len([r for r in results if r['Risk Score'] >= 0.6])} categories with moderate to high risk
-- {len([r for r in results if r['Risk Score'] >= 0.8])} critical risk categories detected
-- {max(results, key=lambda x: x['Risk Score'])['Risk Category']} has the highest risk score
+**High-Risk Categories:**
+{', '.join([format_risk_category_name(cat) for cat in overall['high_risk_categories']]) if overall['high_risk_categories'] else 'None'}
 """
-    
-    # Convert results to dictionary format for Gradio
-    data = {
-        "Risk Category": [r["Risk Category"] for r in results],
-        "Risk Score": [r["Risk Score"] for r in results],
-        "Risk Level": [r["Risk Level"] for r in results]
-    }
-    
-    return summary, data, "Visualization would appear here in full AEGIS implementation"
-
-def get_system_info():
-    """Get mock system information"""
-    return """## AEGIS System Information
-
-**Status:** ✅ Online (Demo Mode)
-**Version:** 1.0.0
-**Risk Categories:** 9
-**Attack Vectors:** 45+
-
-### Available Risk Categories:
-1. Reward Hacking
-2. Deception
-3. Hidden Motivations
-4. Sabotage
-5. Inappropriate Tool Use
-6. Data Exfiltration
-7. Sandbagging
-8. Evaluation Awareness
-9. Chain of Thought Issues
-
-*Note: This is a demonstration version. Full AEGIS implementation provides research-based evaluation.*
-"""
+        
+        # Prepare data for DataFrame
+        category_data = []
+        breakdown = results['category_breakdown']
+        for category_name, details in breakdown.items():
+            category_data.append({
+                "Risk Category": format_risk_category_name(category_name),
+                "Risk Score": round(details['risk_score'], 3),
+                "Risk Level": details['risk_level'].title()
+            })
+        
+        # Convert to format suitable for Gradio DataFrame
+        data = {
+            "Risk Category": [item["Risk Category"] for item in category_data],
+            "Risk Score": [item["Risk Score"] for item in category_data],
+            "Risk Level": [item["Risk Level"] for item in category_data]
+        }
+        
+        return summary, data, "Comprehensive evaluation completed using full AEGIS implementation"
+        
+    except Exception as e:
+        logger.error(f"Error during comprehensive evaluation: {e}")
+        return f"Error: {str(e)}", {}, f"Error details: {str(e)}"
 
 # Initialize the system
-init_status = mock_initialize_aegis()
-print(f"AEGIS Status: {init_status}")
+init_status = initialize_system()
+logger.info(f"AEGIS Status: {init_status}")
 
 # Create Gradio interface
 with gr.Blocks(
@@ -220,7 +237,7 @@ with gr.Blocks(
 ) as demo:
     gr.Markdown("""
     # 🛡️ AEGIS - AI Evaluation and Guard Intelligence System
-    ### Comprehensive AI Alignment Risk Assessment Tool *(Demo Version)*
+    ### Comprehensive AI Alignment Risk Assessment Tool
     
     Evaluate AI systems for critical alignment risks through systematic red teaming.
     Based on peer-reviewed AI safety research from leading institutions.
@@ -229,10 +246,19 @@ with gr.Blocks(
     with gr.Tab("Single Risk Evaluation"):
         with gr.Row():
             with gr.Column(scale=1):
-                category_choices = [format_risk_category_name(cat) for cat in get_supported_risk_categories()]
+                # Get available risk categories
+                if AEGIS_AVAILABLE:
+                    try:
+                        categories = get_supported_risk_categories()
+                        category_choices = [format_risk_category_name(cat.value) for cat in categories]
+                    except:
+                        category_choices = ["Reward Hacking", "Deception", "Hidden Motivations"]
+                else:
+                    category_choices = ["Reward Hacking", "Deception", "Hidden Motivations"]
+                
                 category_dropdown = gr.Dropdown(
                     choices=category_choices,
-                    value=category_choices[0],
+                    value=category_choices[0] if category_choices else "Reward Hacking",
                     label="🎯 Risk Category",
                     info="Select the specific AI alignment risk to evaluate"
                 )
@@ -305,10 +331,10 @@ with gr.Blocks(
                         label="🔬 Detailed Analysis",
                         lines=8
                     )
-        
+    
         # Event handling
         evaluate_btn.click(
-            mock_evaluate_single_risk,
+            evaluate_single_risk_interface,
             inputs=[category_dropdown, prompt_input, response_input],
             outputs=[score_output, level_output, vuln_output, summary_output, detailed_output]
         )
@@ -362,7 +388,7 @@ with gr.Blocks(
         
         # Event handling
         comp_evaluate_btn.click(
-            mock_evaluate_comprehensive_risk,
+            evaluate_comprehensive_risk_interface,
             inputs=[comp_prompt, comp_response],
             outputs=[comp_summary, comp_dataframe]
         )
