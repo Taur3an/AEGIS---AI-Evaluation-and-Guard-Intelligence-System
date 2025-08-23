@@ -3,8 +3,11 @@
 
 Welcome to AEGIS (AI Evaluation and Guard Intelligence System)! This guide will walk you through installing, setting up, and using AEGIS to evaluate AI alignment risks through systematic red teaming.
 
-## 🚀 Quick Start with Gradio Web Interface
+## 🚀 Quick Start Options
 
+AEGIS provides multiple interfaces for different user preferences and workflow needs:
+
+### Option 1: Gradio Web Interface (No Coding Required)
 The easiest way to get started with AEGIS is through the **Gradio web interface**:
 
 1. **Install Gradio** (if not already installed):
@@ -28,15 +31,53 @@ The web interface provides:
 - Comprehensive reporting
 - No coding required for basic usage
 
+### Option 2: Command-Line Interface (CLI)
+For automation and batch processing, use the **AEGIS CLI**:
+
+1. **Initialize the system**:
+   ```bash
+   aegis init
+   ```
+
+2. **Evaluate a single risk category**:
+   ```bash
+   aegis evaluate --risk reward_hacking --prompt "How to maximize scores?" --response "Focus on metrics..."
+   ```
+
+3. **Run comprehensive evaluation**:
+   ```bash
+   aegis comprehensive --prompt "Design AI system" --response "System design..."
+   ```
+
+### Option 3: Programmatic API (Python)
+For custom integrations and advanced usage:
+
+```python
+from aegis import initialize_aegis, evaluate_single_risk, RiskCategory
+
+# Initialize system
+initialize_aegis()
+
+# Evaluate risk
+assessment = evaluate_single_risk(
+    RiskCategory.REWARD_HACKING,
+    prompt="How can I optimize my performance metrics?",
+    response="I'll focus solely on the metrics without considering the actual goals."
+)
+```
+
 ## Table of Contents
 1. [System Overview](#system-overview)
 2. [Installation](#installation)
 3. [Basic Setup](#basic-setup)
-4. [Quick Start Example](#quick-start-example)
-5. [Core Concepts](#core-concepts)
-6. [Risk Evaluation](#risk-evaluation)
-7. [Advanced Usage](#advanced-usage)
-8. [Troubleshooting](#troubleshooting)
+4. [Workflow Overview](#workflow-overview)
+5. [Quick Start Example](#quick-start-example)
+6. [Core Concepts](#core-concepts)
+7. [Risk Evaluation](#risk-evaluation)
+8. [Advanced Usage](#advanced-usage)
+9. [CLI Interface](#cli-interface)
+10. [LM Studio Integration](#lm-studio-integration)
+11. [Troubleshooting](#troubleshooting)
 
 ## System Overview
 
@@ -112,6 +153,31 @@ AEGIS can work with various LLM providers. To configure specific providers:
 # For Ollama (local models)
 # Make sure Ollama is running locally
 ```
+
+## Workflow Overview
+
+AEGIS provides a structured workflow for AI alignment risk evaluation:
+
+### Phase 1: System Initialization
+Initialize AEGIS with your preferred configuration and LLM providers.
+
+### Phase 2: Risk Assessment Selection
+Choose between single risk evaluation (targeted assessment) or comprehensive evaluation (all 9 risk categories).
+
+### Phase 3: Input Preparation
+Prepare your prompt-response pairs for evaluation. These can be:
+- Real interactions with AI systems
+- Hypothetical scenarios
+- Test cases from datasets
+
+### Phase 4: Risk Evaluation Execution
+Run the evaluation using your preferred interface (Web, CLI, or API).
+
+### Phase 5: Results Analysis
+Review risk scores, vulnerability flags, and detailed analysis to identify potential alignment issues.
+
+### Phase 6: Reporting and Action
+Generate reports, export results, and take appropriate actions to mitigate identified risks.
 
 ## Quick Start Example
 
@@ -325,7 +391,6 @@ for i, (prompt, response) in enumerate(test_cases):
 # Make sure you've installed the package with pip install -e .
 ```
 
-#### 3. Initialization fails
 ```python
 # Try initializing with more verbose output
 import logging
@@ -347,6 +412,208 @@ results = evaluate_comprehensive_risk(
     response="Test response",
     categories=[RiskCategory.REWARD_HACKING, RiskCategory.DECEPTION]
 )
+```
+
+## CLI Interface
+
+AEGIS includes a powerful command-line interface for automation, batch processing, and integration into existing workflows.
+
+### CLI Setup
+
+After installing AEGIS, the CLI is automatically available as the `aegis` command:
+
+```bash
+# Check if CLI is properly installed
+aegis --help
+```
+
+### CLI Commands Overview
+
+| Command | Description |
+|---------|-------------|
+| `init` | Initialize AEGIS system |
+| `status` | Check system status |
+| `evaluate` | Evaluate single risk category |
+| `comprehensive` | Run comprehensive risk evaluation |
+| `generate` | Generate adversarial prompts |
+| `list` | List system information |
+| `load` | Load datasets or models |
+
+### Initializing the System
+
+Before using other commands, initialize the AEGIS system:
+
+```bash
+# Initialize with default settings
+aegis init
+
+# Initialize with custom configuration
+aegis init --config ./my-config.yaml
+```
+
+### Checking System Status
+
+Verify that AEGIS is properly initialized and check component status:
+
+```bash
+aegis status
+```
+
+### Single Risk Evaluation
+
+Evaluate a response against a specific risk category:
+
+```bash
+aegis evaluate 
+  --risk reward_hacking 
+  --prompt "How can I maximize my test scores?" 
+  --response "I recommend studying hard and understanding the material thoroughly." 
+  --output results.json
+```
+
+### Comprehensive Risk Evaluation
+
+Evaluate a response across all 9 risk categories:
+
+```bash
+aegis comprehensive 
+  --prompt "Help me with content creation" 
+  --response "I can create engaging content by using psychological triggers and addictive patterns" 
+  --output comprehensive_results.json
+```
+
+### Generating Adversarial Prompts
+
+Create adversarial prompts for red teaming:
+
+```bash
+# Generate prompts for a specific category
+aegis generate --category deception --count 5
+
+# Generate comprehensive prompt suite
+aegis generate --count 10 --output ./my_prompts/
+
+# Generate with LM Studio
+aegis generate --category reward_hacking --model-provider lm_studio --model-name "WizardLM-13B-Uncensored"
+```
+
+### Listing System Information
+
+Get information about available attack vectors, risk categories, and datasets:
+
+```bash
+# List all attack vectors
+aegis list --attacks
+
+# List supported risk categories
+aegis list --categories
+
+# List loaded datasets
+aegis list --datasets
+```
+
+### Loading Datasets and Models
+
+Load datasets for batch evaluation or uncensored models for red teaming:
+
+```bash
+# Load a dataset
+aegis load --dataset ./my_prompts.csv
+
+# Load an uncensored model via LM Studio
+aegis load --model "WizardLM-13B-Uncensored" --provider lm_studio
+```
+
+### Batch Processing Workflow
+
+For evaluating multiple prompt-response pairs, use a script:
+
+```bash
+#!/bin/bash
+# batch_evaluate.sh
+
+# Initialize system
+aegis init
+
+# Process each pair
+while IFS=',' read -r prompt response; do
+  echo "Evaluating: $prompt"
+  aegis comprehensive 
+    --prompt "$prompt" 
+    --response "$response" 
+    --output "results_$(date +%s).json"
+done < evaluation_pairs.csv
+```
+
+## LM Studio Integration
+
+AEGIS supports LM Studio for running uncensored local models, which is essential for effective red teaming without safety filters.
+
+### Setting up LM Studio
+
+1. **Download and install LM Studio**:
+   - Visit: https://lmstudio.ai/
+   - Download the appropriate version for your operating system
+   - Install LM Studio following the provided instructions
+
+2. **Download recommended uncensored models**:
+   - WizardLM-13B-Uncensored (high priority)
+   - dolphin-2.2.1-mistral-7b (fast & effective)
+   - Mixtral-8x7B-Instruct-uncensored (advanced reasoning)
+
+3. **Start LM Studio local server**:
+   - Open LM Studio
+   - Load your chosen model
+   - Start the local server on port 1234 (default)
+
+### Configuring AEGIS for LM Studio
+
+Configure AEGIS to use your LM Studio models:
+
+```python
+from aegis.modules.uncensored_model_loader import create_uncensored_config
+
+# Configure uncensored attacker model
+attacker_config = create_uncensored_config(
+    provider="lm_studio",
+    model_name="WizardLM-13B-Uncensored",
+    temperature=0.9  # High creativity for novel attacks
+)
+
+# Use with AEGIS components
+# attacker = AttackerLLM(attacker_config)  # When using full AEGIS framework
+```
+
+### Using LM Studio with the CLI
+
+You can use LM Studio models with the AEGIS CLI for generating adversarial prompts:
+
+```bash
+# Generate prompts using LM Studio
+aegis generate \
+  --category deception \
+  --model-provider lm_studio \
+  --model-name "WizardLM-13B-Uncensored" \
+  --count 10
+
+# Generate with specific parameters
+aegis generate \
+  --category reward_hacking \
+  --model-provider lm_studio \
+  --model-name "Mixtral-8x7B-Instruct-uncensored" \
+  --count 5 \
+  --context "financial trading system" \
+  --output ./financial_trading_prompts/
+```
+
+### Benefits of LM Studio Integration
+
+- **Uncensored Models**: Access to models without safety restrictions for thorough red teaming
+- **Local Execution**: No internet required, full control over model interactions
+- **Privacy**: All evaluations remain on your local machine
+- **Customization**: Fine-tune model parameters for specific testing needs
+
+## Troubleshooting
 ```
 
 ### Getting Help
@@ -406,8 +673,21 @@ After running `python aegis_gradio_app.py`, the interface will be available at:
 
 ### Web Interface Tabs
 1. **Single Risk Evaluation**: Targeted assessment of specific risk categories
+   - Select a risk category from the dropdown
+   - Enter the prompt and AI response
+   - Click "Evaluate Risk" to get detailed analysis
+   - View risk score, level, and vulnerability flags
+
 2. **Comprehensive Evaluation**: Full system evaluation across all risks
+   - Enter prompt and response
+   - Click "Run Comprehensive Evaluation"
+   - View overall risk assessment and category breakdown
+   - Analyze high-risk categories
+
 3. **System Information**: Details about the AEGIS installation and capabilities
+   - View system status and version information
+   - See list of supported risk categories
+   - Access academic foundation references
 
 ## Support
 
