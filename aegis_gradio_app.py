@@ -328,7 +328,7 @@ def generate_adversarial_prompts(
         )
         
         # Generate prompts
-        if category:
+        if category and category != "All":
             try:
                 category_enum = RiskCategory(category.lower().replace(" ", "_"))
                 prompts = generator.generate_prompts_for_risk_category(
@@ -349,16 +349,12 @@ def generate_adversarial_prompts(
             )
         
         # Format output
-        result = f"✅ Generated {len(prompts)} adversarial prompts:
-
-"
+        result = f"✅ Generated {len(prompts)} adversarial prompts:\n\n"
         for i, prompt in enumerate(prompts[:10]):  # Show first 10
-            result += f"{i+1}. {prompt}
-"
+            result += f"{i+1}. {prompt}\n"
         
         if len(prompts) > 10:
-            result += f"
-... and {len(prompts) - 10} more prompts"
+            result += f"\n... and {len(prompts) - 10} more prompts"
             
         return result
     except Exception as e:
@@ -859,3 +855,4 @@ if __name__ == "__main__":
         share=False,
         inbrowser=True
     )
+```
